@@ -39,9 +39,22 @@ Junk Art Genius is a web application that uses the power of the Google Gemini AP
     *   **Image Generation:** `gemini-2.5-flash-image` for creating the step-by-step illustrations.
 *   **PDF Generation:** `jspdf` & `html2canvas`
 
-## 🔑 API Key Requirement
+## 🚀 Deployment & API Key
 
 This application requires a Google Gemini API key to function. The key must be provided as an environment variable named `API_KEY` in the execution environment.
+
+### Deploying on Vercel
+
+When deploying to a platform like Vercel, you must configure your API key in the project settings for the application to work correctly.
+
+1.  Navigate to your project's dashboard on the Vercel website.
+2.  Go to the **Settings** tab.
+3.  In the side menu, click on **Environment Variables**.
+4.  Add a new variable:
+    *   **Key:** `API_KEY`
+    *   **Value:** Paste your Google Gemini API key here.
+5.  Ensure the variable is available to all environments (Production, Preview, and Development).
+6.  After saving, you may need to redeploy your project for the changes to take effect. Go to the **Deployments** tab and trigger a new deployment.
 
 ## 📁 Project Structure
 

@@ -95,8 +95,9 @@ export const hydrateIdeaWithImages = async (idea: CraftIdea): Promise<CraftIdea>
 
   } catch (error) {
      console.error("Error generating images from Gemini API:", error);
-     // Return the original idea so text content isn't lost
-     return idea;
+     // Re-throw the error so the UI can display a proper message to the user.
+     const errorMessage = error instanceof Error ? error.message : String(error);
+     throw new Error(`Failed to generate images. This could be due to a missing API key in your Vercel environment or a network issue. Details: ${errorMessage}`);
   }
 };
 
