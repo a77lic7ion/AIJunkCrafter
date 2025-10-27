@@ -7,7 +7,7 @@ import { Tutorial } from './components/Tutorial';
 import { SavedIdeasPage } from './components/SavedIdeasPage';
 import { generateCraftIdea, CraftIdea, GenerationConfig } from './services/geminiService';
 
-const AVAILABLE_SUPPLIES = ['glue', 'scissors', 'tape', 'paint', 'crayons', 'string'];
+const AVAILABLE_SUPPLIES = ['construction paper', 'cotton balls', 'crayons', 'glitter', 'glue', 'googly eyes', 'markers', 'paint', 'pipe cleaners', 'ribbons', 'scissors', 'stickers', 'string', 'tape'];
 
 type AppView = 'creator' | 'saved';
 
