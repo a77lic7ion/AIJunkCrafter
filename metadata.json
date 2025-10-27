@@ -1,0 +1,7 @@
+{
+  "name": "Junk Art Creator",
+  "description": "Take a picture of household junk and get creative ideas for toys and crafts for kids. The app uses AI to transform your random items into fun projects.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
