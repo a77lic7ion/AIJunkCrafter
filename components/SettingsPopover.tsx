@@ -19,7 +19,7 @@ const Slider: React.FC<{
         <div>
             <div className="flex justify-between items-center mb-1">
                 <label htmlFor={id} className="text-sm font-medium text-slate-700">{label}</label>
-                <span className="text-sm font-semibold text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-md">{value}</span>
+                <span className="text-sm font-semibold text-slate-700 bg-stone-100 px-2 py-0.5 rounded-md">{value}</span>
             </div>
             <input
                 id={id}
@@ -29,7 +29,7 @@ const Slider: React.FC<{
                 max={max}
                 step={step}
                 onChange={onChange}
-                className="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-indigo-500"
+                className="w-full h-2 bg-stone-200 rounded-lg appearance-none cursor-pointer accent-slate-700"
             />
         </div>
     );
@@ -42,7 +42,7 @@ export const SettingsPopover: React.FC<SettingsPopoverProps> = ({ config, onConf
   };
 
   return (
-    <div className="absolute bottom-full mb-2 w-72 bg-white p-4 rounded-lg shadow-xl border border-slate-200 z-20 right-0 transform translate-x-1/2 md:translate-x-0 md:right-auto md:left-1/2 md:-translate-x-1/2">
+    <div className="absolute bottom-full mb-2 w-72 bg-white p-4 rounded-lg shadow-xl border border-stone-200 z-20 right-0 transform translate-x-1/2 md:translate-x-0 md:right-auto md:left-1/2 md:-translate-x-1/2">
         <h4 className="text-md font-bold text-slate-800 text-center mb-3">Advanced Generation Settings</h4>
         <div className="space-y-4">
             <Slider

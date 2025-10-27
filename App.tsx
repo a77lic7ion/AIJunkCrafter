@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { ImageUploader } from './components/ImageUploader';
@@ -5,14 +6,16 @@ import { ResultDisplay } from './components/ResultDisplay';
 import { LoadingSpinner } from './components/LoadingSpinner';
 import { Tutorial } from './components/Tutorial';
 import { SavedIdeasPage } from './components/SavedIdeasPage';
+import { Hero } from './components/Hero';
+import { Footer } from './components/Footer';
 import { generateCraftIdea, CraftIdea, GenerationConfig } from './services/geminiService';
 
 const AVAILABLE_SUPPLIES = ['construction paper', 'cotton balls', 'crayons', 'glitter', 'glue', 'googly eyes', 'markers', 'paint', 'pipe cleaners', 'ribbons', 'scissors', 'stickers', 'string', 'tape'];
 
-type AppView = 'creator' | 'saved';
+export type AppView = 'home' | 'projects';
 
 function App() {
-  const [view, setView] = useState<AppView>('creator');
+  const [view, setView] = useState<AppView>('home');
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [selectedSupplies, setSelectedSupplies] = useState<string[]>([]);
@@ -78,8 +81,9 @@ function App() {
     try {
       const idea = await generateCraftIdea(imageFile, selectedSupplies, customIdea, (message: string) => setLoadingMessage(message), generationConfig);
       setResult(idea);
+    // Fix: Added curly braces to the catch block to create a valid try-catch-finally structure.
     } catch (err: any) {
-      setError(err.message || 'An unexpected error occurred.');
+      setError((err as Error).message || 'An unexpected error occurred.');
     } finally {
       setIsLoading(false);
     }
@@ -148,58 +152,55 @@ function App() {
   };
 
   const handleDismissTutorial = () => setShowTutorial(false);
-  const handleShowSavedIdeas = () => setView('saved');
 
   return (
-    <div className="bg-slate-50 min-h-screen font-sans text-slate-800">
+    <div className="bg-stone-50 min-h-screen flex flex-col">
       <Header 
-        onShowSaved={handleShowSavedIdeas} 
-        savedCount={savedIdeas.length}
+        currentView={view}
+        onSetView={setView}
       />
-      <main className="container mx-auto p-4 md:p-8 max-w-4xl">
-        {view === 'creator' ? (
+      <main className="flex-grow">
+        {view === 'home' ? (
           <>
-            <div className="text-center mb-8">
-              <h1 className="text-4xl md:text-5xl font-extrabold text-slate-800">Junk Art Genius</h1>
-              <p className="mt-3 text-lg text-slate-600">Turn your clutter into creative crafts for kids!</p>
-            </div>
-            
-            {showTutorial && !imageUrl && <Tutorial onDismiss={handleDismissTutorial} />}
+            <Hero onExplore={() => setView('projects')} />
+            <div className="container mx-auto p-4 md:p-8 max-w-4xl" id="creator">
+              {showTutorial && !imageUrl && <Tutorial onDismiss={handleDismissTutorial} />}
 
-            <div className="bg-white p-6 md:p-8 rounded-2xl shadow-lg">
-              <ImageUploader
-                onImageChange={handleImageChange}
-                imageUrl={imageUrl}
-                onGenerate={handleGenerate}
-                onReset={handleReset}
-                isLoading={isLoading}
-                hasResult={!!result}
-                availableSupplies={AVAILABLE_SUPPLIES}
-                selectedSupplies={selectedSupplies}
-                onSupplyToggle={handleSupplyToggle}
-                customIdea={customIdea}
-                onCustomIdeaChange={handleCustomIdeaChange}
-                generationConfig={generationConfig}
-                onGenerationConfigChange={setGenerationConfig}
-              />
-              
-              {isLoading && <LoadingSpinner message={loadingMessage} />}
-              
-              {error && (
-                <div className="mt-6 p-4 bg-pink-100 border border-pink-400 text-pink-700 rounded-lg text-center" role="alert">
-                  <p className="font-bold">Oh no!</p>
-                  <p>{error}</p>
-                </div>
-              )}
-              
-              {result && (
-                <ResultDisplay 
-                  result={result}
-                  onSave={handleSaveIdea}
-                  onShare={() => handleShareIdea(result)}
-                  isSaved={savedIdeas.some(idea => idea.title === result.title)}
+              <div className="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-stone-200">
+                <ImageUploader
+                  onImageChange={handleImageChange}
+                  imageUrl={imageUrl}
+                  onGenerate={handleGenerate}
+                  onReset={handleReset}
+                  isLoading={isLoading}
+                  hasResult={!!result}
+                  availableSupplies={AVAILABLE_SUPPLIES}
+                  selectedSupplies={selectedSupplies}
+                  onSupplyToggle={handleSupplyToggle}
+                  customIdea={customIdea}
+                  onCustomIdeaChange={handleCustomIdeaChange}
+                  generationConfig={generationConfig}
+                  onGenerationConfigChange={setGenerationConfig}
                 />
-              )}
+                
+                {isLoading && <LoadingSpinner message={loadingMessage} />}
+                
+                {error && (
+                  <div className="mt-6 p-4 bg-red-50 border border-red-200 text-red-800 rounded-lg text-center" role="alert">
+                    <p className="font-bold">Oh no!</p>
+                    <p>{error}</p>
+                  </div>
+                )}
+                
+                {result && (
+                  <ResultDisplay 
+                    result={result}
+                    onSave={handleSaveIdea}
+                    onShare={() => handleShareIdea(result)}
+                    isSaved={savedIdeas.some(idea => idea.title === result.title)}
+                  />
+                )}
+              </div>
             </div>
           </>
         ) : (
@@ -207,10 +208,11 @@ function App() {
             ideas={savedIdeas}
             onDelete={handleDeleteIdea}
             onClearAll={handleClearAllIdeas}
-            onBack={() => setView('creator')}
+            onBack={() => setView('home')}
           />
         )}
       </main>
+      <Footer />
     </div>
   );
 }

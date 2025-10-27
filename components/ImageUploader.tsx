@@ -50,7 +50,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
         <div className="text-center">
           <button
             onClick={onReset}
-            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105"
+            className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-slate-800 hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-transform transform hover:scale-105"
           >
             <ArrowPathIcon className="w-5 h-5 mr-2 -ml-1"/>
             Create Another
@@ -71,33 +71,33 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
       
       {imageUrl ? (
         <div className="w-full flex flex-col items-center">
-          <div className="w-full max-w-md mb-6 rounded-lg overflow-hidden shadow-md border-4 border-slate-100">
+          <div className="w-full max-w-md mb-6 rounded-lg overflow-hidden shadow-md border border-stone-200">
             <img src={imageUrl} alt="Uploaded junk" className="w-full h-auto object-contain" />
           </div>
 
           <div className="w-full max-w-md mb-6">
-            <label htmlFor="custom-idea" className="block text-lg font-semibold text-slate-700 mb-2 text-center">Have your own idea? (Optional)</label>
+            <label htmlFor="custom-idea" className="block text-base font-medium text-slate-700 mb-2 text-center">Have your own idea? <span className="text-slate-500">(Optional)</span></label>
             <input
                 type="text"
                 id="custom-idea"
                 value={customIdea}
                 onChange={(e) => onCustomIdeaChange(e.target.value)}
                 placeholder="e.g., A rocket ship from these bottles"
-                className="w-full px-4 py-2 border border-slate-300 rounded-full focus:ring-indigo-500 focus:border-indigo-500 text-center"
+                className="w-full px-4 py-2 border border-stone-300 rounded-md focus:ring-slate-500 focus:border-slate-500 text-center"
             />
           </div>
 
-          <div className="w-full max-w-md mb-6 text-center">
-            <h3 className="text-lg font-semibold text-slate-700 mb-3">What extra supplies do you have?</h3>
+          <div className="w-full max-w-lg mb-6 text-center">
+            <h3 className="text-base font-medium text-slate-700 mb-3">What extra supplies do you have?</h3>
             <div className="flex flex-wrap gap-2 justify-center">
               {availableSupplies.map(supply => (
                 <button
                   key={supply}
                   onClick={() => onSupplyToggle(supply)}
-                  className={`capitalize px-4 py-2 text-sm font-medium rounded-full transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                  className={`capitalize px-4 py-2 text-sm font-medium rounded-md transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 ${
                     selectedSupplies.includes(supply)
-                      ? 'bg-indigo-500 text-white'
-                      : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                      ? 'bg-slate-800 text-white'
+                      : 'bg-stone-100 text-slate-700 hover:bg-stone-200'
                   }`}
                 >
                   {supply}
@@ -109,14 +109,14 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
             <button
               onClick={onGenerate}
               disabled={isLoading}
-              className="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-medium rounded-full text-white bg-indigo-500 hover:bg-indigo-600 disabled:bg-slate-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-transform transform hover:scale-105"
+              className="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-md text-white bg-slate-800 hover:bg-slate-900 disabled:bg-slate-400 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-transform transform hover:scale-105"
             >
-              <SparklesIcon className="w-6 h-6 mr-3 -ml-1" />
+              <SparklesIcon className="w-5 h-5 mr-3 -ml-1" />
               {isLoading ? 'Thinking...' : 'Generate Idea'}
             </button>
              <button
                 onClick={() => setShowSettings(prev => !prev)}
-                className="p-3 rounded-full text-slate-500 hover:bg-slate-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                className="p-3 rounded-full text-slate-500 hover:bg-stone-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 transition-colors"
                 aria-label="Generation Settings"
               >
                 <SettingsIcon className="w-6 h-6" />
@@ -130,11 +130,11 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
           </div>
         </div>
       ) : (
-        <div className="w-full p-8 border-2 border-dashed border-slate-300 rounded-lg text-center">
+        <div className="w-full p-8 border-2 border-dashed border-stone-300 rounded-lg text-center">
           <div className="flex flex-col md:flex-row gap-4 justify-center">
             <button
               onClick={triggerFileSelect}
-              className="inline-flex items-center justify-center px-6 py-3 border border-slate-300 text-base font-medium rounded-full text-slate-700 bg-white hover:bg-slate-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-all"
+              className="inline-flex items-center justify-center px-6 py-3 border border-stone-300 text-base font-medium rounded-md text-slate-700 bg-white hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 transition-all"
             >
               <UploadIcon className="w-5 h-5 mr-2" />
               Upload Photo
@@ -147,7 +147,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({
               className="hidden"
               id="cameraInput"
             />
-            <label htmlFor="cameraInput" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-full text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all cursor-pointer">
+            <label htmlFor="cameraInput" className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-slate-700 hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-all cursor-pointer">
               <CameraIcon className="w-5 h-5 mr-2" />
               Use Camera
             </label>

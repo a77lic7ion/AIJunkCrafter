@@ -23,21 +23,21 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onSave, on
   };
   
   return (
-    <div id="craft-idea-result" className="mt-8 p-6 bg-indigo-50 rounded-lg border border-indigo-200 animate-fade-in">
-       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-4">
-        <h2 className="text-2xl font-bold text-indigo-800 flex-1">{result.title}</h2>
+    <div id="craft-idea-result" className="mt-8 bg-white rounded-lg animate-fade-in">
+       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 mb-6 pt-6 px-6">
+        <h2 className="text-3xl font-bold text-slate-800 flex-1">{result.title}</h2>
         <div className="flex items-center gap-2 flex-shrink-0">
            <button
               onClick={handleExport}
               disabled={isExporting}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full bg-slate-600 text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors disabled:bg-slate-400"
+              className="inline-flex items-center px-4 py-2 border border-stone-300 text-sm font-medium rounded-md bg-white text-slate-700 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 transition-colors disabled:opacity-50"
           >
               <DocumentArrowDownIcon className="w-5 h-5 mr-2 -ml-1" />
-              {isExporting ? 'Exporting...' : 'Export PDF'}
+              {isExporting ? 'Exporting...' : 'Export'}
           </button>
           <button
               onClick={onShare}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full bg-slate-600 text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-stone-300 text-sm font-medium rounded-md bg-white text-slate-700 hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-400 transition-colors"
           >
               <ShareIcon className="w-5 h-5 mr-2 -ml-1" />
               Share
@@ -45,7 +45,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onSave, on
           <button
               onClick={onSave}
               disabled={isSaved}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full disabled:bg-green-500 disabled:cursor-not-allowed bg-pink-500 text-white hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500 transition-colors"
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md disabled:bg-green-600 disabled:cursor-not-allowed bg-slate-800 text-white hover:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-slate-500 transition-colors"
           >
               {isSaved ? (
                   <>
@@ -62,9 +62,9 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onSave, on
         </div>
        </div>
 
-      <div className="result-content text-slate-700 space-y-6">
+      <div className="result-content text-slate-600 space-y-8 p-6">
         <div>
-          <h3 className="text-xl font-semibold text-slate-700 mt-4 mb-2">Materials Needed</h3>
+          <h3 className="text-xl font-semibold text-slate-800 mb-3">Materials Needed</h3>
           <ul className="list-disc list-inside space-y-1 pl-2">
             {result.materials.map((material, index) => (
               <li key={index}>{material}</li>
@@ -73,11 +73,11 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onSave, on
         </div>
         
         <div>
-          <h3 className="text-xl font-semibold text-slate-700 mt-4 mb-2">Step-by-Step Instructions</h3>
+          <h3 className="text-xl font-semibold text-slate-800 mb-4">Instructions</h3>
           <ol className="space-y-6">
             {result.steps.map((step, index) => (
-              <li key={index} className="flex flex-col md:flex-row items-start gap-4">
-                <div className="flex-shrink-0 w-full md:w-48 h-40 bg-slate-200 rounded-lg overflow-hidden flex items-center justify-center">
+              <li key={index} className="flex flex-col md:flex-row items-start gap-6">
+                <div className="flex-shrink-0 w-full md:w-56 h-48 bg-stone-100 border border-stone-200 rounded-lg overflow-hidden flex items-center justify-center">
                    {step.imageUrl ? (
                      <img src={step.imageUrl} alt={`Illustration for step ${index + 1}`} className="w-full h-full object-cover"/>
                    ) : (
@@ -85,7 +85,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onSave, on
                    )}
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-slate-800">Step {index + 1}</p>
+                  <p className="font-bold text-slate-800 mb-1">Step {index + 1}</p>
                   <p>{step.text}</p>
                 </div>
               </li>
