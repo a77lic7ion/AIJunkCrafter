@@ -38,8 +38,8 @@ export const Header: React.FC<HeaderProps> = ({ currentView, onSetView }) => {
             <nav className="hidden md:flex items-center space-x-2">
               <NavLink label="Home" isActive={currentView === 'home'} onClick={() => onSetView('home')} />
               <NavLink label="Projects" isActive={currentView === 'projects'} onClick={() => onSetView('projects')} />
-              <NavLink label="Materials" isActive={false} onClick={() => {}} />
-              <NavLink label="Inspiration" isActive={false} onClick={() => {}} />
+              <NavLink label="Materials" isActive={currentView === 'materials'} onClick={() => onSetView('materials')} />
+              <NavLink label="Inspiration" isActive={currentView === 'inspiration'} onClick={() => onSetView('inspiration')} />
             </nav>
           </div>
 

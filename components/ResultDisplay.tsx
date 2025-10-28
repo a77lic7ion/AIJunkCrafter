@@ -15,7 +15,7 @@ export const ResultDisplay: React.FC<ResultDisplayProps> = ({ result, onSave, on
 
   const handleExport = async () => {
     setIsExporting(true);
-    const [success, error] = await exportToPdf('craft-idea-result', result.title);
+    const [success, error] = await exportToPdf(result, result.title);
     if (!success) {
         alert(error);
     }

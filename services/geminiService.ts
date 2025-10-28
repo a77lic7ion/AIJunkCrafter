@@ -57,18 +57,29 @@ const responseSchema = {
 
 /**
  * Takes a "lean" craft idea (without images) and generates an image for each step.
+ * Requests are made sequentially to avoid rate-limiting errors.
  * @param idea The craft idea to hydrate with images.
+ * @param onStepHydrated An optional callback that receives each step as it's hydrated.
  * @returns A promise that resolves to the craft idea with imageUrls populated.
  */
-export const hydrateIdeaWithImages = async (idea: CraftIdea): Promise<CraftIdea> => {
+export const hydrateIdeaWithImages = async (
+  idea: CraftIdea,
+  onStepHydrated?: (updatedStep: CraftStep, index: number) => void
+): Promise<CraftIdea> => {
   if (!process.env.API_KEY) {
     throw new Error("API key is not configured.");
   }
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const imageModel = 'gemini-2.5-flash-image';
+  const hydratedSteps: CraftStep[] = idea.steps.map(s => ({ ...s }));
 
   try {
-    const imagePromises = idea.steps.map(async (step) => {
+    for (const [index, step] of idea.steps.entries()) {
+      // Add a delay between requests to avoid hitting rate limits.
+      if (index > 0) {
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+
       const imageGenResponse = await ai.models.generateContent({
         model: imageModel,
         contents: {
@@ -80,24 +91,41 @@ export const hydrateIdeaWithImages = async (idea: CraftIdea): Promise<CraftIdea>
       });
 
       const firstPart = imageGenResponse.candidates?.[0]?.content?.parts?.[0];
+      let updatedStep: CraftStep;
       if (firstPart && firstPart.inlineData) {
         const base64ImageBytes = firstPart.inlineData.data;
-        return {
+        updatedStep = {
           ...step,
           imageUrl: `data:${firstPart.inlineData.mimeType};base64,${base64ImageBytes}`
         };
+      } else {
+        updatedStep = { ...step, imageUrl: undefined }; // Mark as failed
       }
-      return { ...step, imageUrl: undefined }; // Return step without image if generation fails
-    });
+      
+      hydratedSteps[index] = updatedStep;
+      onStepHydrated?.(updatedStep, index);
+    }
 
-    const stepsWithImages = await Promise.all(imagePromises);
-    return { ...idea, steps: stepsWithImages };
+    return { ...idea, steps: hydratedSteps };
 
   } catch (error) {
      console.error("Error generating images from Gemini API:", error);
-     // Re-throw the error so the UI can display a proper message to the user.
      const errorMessage = error instanceof Error ? error.message : String(error);
-     throw new Error(`Failed to generate images. This could be due to a missing API key in your Vercel environment or a network issue. Details: ${errorMessage}`);
+     
+     let friendlyMessage = "Failed to generate images. This could be due to a missing API key or a network issue.";
+     
+     try {
+       // Gemini API often returns a JSON string in the error message
+       const errorObj = JSON.parse(errorMessage);
+       if (errorObj.error?.status === 'RESOURCE_EXHAUSTED' || errorObj.error?.code === 429) {
+           friendlyMessage = "Image generation is temporarily unavailable due to high demand. Please try again in a few moments.";
+       }
+     } catch (e) {
+       // Not a JSON error, use the original for context
+       friendlyMessage += ` Details: ${errorMessage}`;
+     }
+     
+     throw new Error(friendlyMessage);
   }
 };
 
@@ -157,6 +185,6 @@ export const generateCraftIdea = async (
 
   updateLoadingMessage(`Generating images for ${structuredResponse.steps.length} steps...`);
 
-  // Step 2: Generate an image for each step using the new helper
+  // Step 2: Generate an image for each step. This now happens sequentially.
   return await hydrateIdeaWithImages(structuredResponse);
 };

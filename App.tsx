@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Header } from './components/Header';
 import { ImageUploader } from './components/ImageUploader';
@@ -9,10 +8,13 @@ import { SavedIdeasPage } from './components/SavedIdeasPage';
 import { Hero } from './components/Hero';
 import { Footer } from './components/Footer';
 import { generateCraftIdea, CraftIdea, GenerationConfig } from './services/geminiService';
+import { InspirationPage } from './components/InspirationPage';
+import { inspirationIdeas } from './data/inspirationIdeas';
+import { MaterialsPage } from './components/MaterialsPage';
 
 const AVAILABLE_SUPPLIES = ['construction paper', 'cotton balls', 'crayons', 'glitter', 'glue', 'googly eyes', 'markers', 'paint', 'pipe cleaners', 'ribbons', 'scissors', 'stickers', 'string', 'tape'];
 
-export type AppView = 'home' | 'projects';
+export type AppView = 'home' | 'projects' | 'inspiration' | 'materials';
 
 function App() {
   const [view, setView] = useState<AppView>('home');
@@ -99,12 +101,12 @@ function App() {
     setIsLoading(false);
   };
 
-  const handleSaveIdea = () => {
-    if (result) {
+  const handleSaveIdea = (ideaToSave: CraftIdea | null) => {
+    if (ideaToSave) {
       // Create a "lean" version of the idea without the bulky image URLs for storage
       const leanResult: CraftIdea = {
-        ...result,
-        steps: result.steps.map(({ text, imagePrompt }) => ({ text, imagePrompt })),
+        ...ideaToSave,
+        steps: ideaToSave.steps.map(({ text, imagePrompt }) => ({ text, imagePrompt })),
       };
 
       if (!savedIdeas.some(idea => idea.title === leanResult.title)) {
@@ -153,14 +155,10 @@ function App() {
 
   const handleDismissTutorial = () => setShowTutorial(false);
 
-  return (
-    <div className="bg-stone-50 min-h-screen flex flex-col">
-      <Header 
-        currentView={view}
-        onSetView={setView}
-      />
-      <main className="flex-grow">
-        {view === 'home' ? (
+  const renderView = () => {
+    switch (view) {
+      case 'home':
+        return (
           <>
             <Hero onExplore={() => setView('projects')} />
             <div className="container mx-auto p-4 md:p-8 max-w-4xl" id="creator">
@@ -195,22 +193,54 @@ function App() {
                 {result && (
                   <ResultDisplay 
                     result={result}
-                    onSave={handleSaveIdea}
+                    onSave={() => handleSaveIdea(result)}
                     onShare={() => handleShareIdea(result)}
-                    isSaved={savedIdeas.some(idea => idea.title === result.title)}
+                    isSaved={savedIdeas.some(idea => result && idea.title === result.title)}
                   />
                 )}
               </div>
             </div>
           </>
-        ) : (
+        );
+      case 'projects':
+        return (
           <SavedIdeasPage 
             ideas={savedIdeas}
             onDelete={handleDeleteIdea}
             onClearAll={handleClearAllIdeas}
             onBack={() => setView('home')}
           />
-        )}
+        );
+      case 'inspiration':
+        return (
+          <InspirationPage
+            ideas={inspirationIdeas}
+            savedIdeas={savedIdeas}
+            onSaveIdea={handleSaveIdea}
+            onBack={() => setView('home')}
+          />
+        );
+      case 'materials':
+        return <MaterialsPage />;
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="bg-stone-50 min-h-screen flex flex-col">
+      <Header 
+        currentView={view}
+        onSetView={(newView) => {
+          setView(newView);
+          // If navigating away from home page with a result, reset it
+          if (newView !== 'home' && result) {
+            handleReset();
+          }
+        }}
+      />
+      <main className="flex-grow">
+        {renderView()}
       </main>
       <Footer />
     </div>
